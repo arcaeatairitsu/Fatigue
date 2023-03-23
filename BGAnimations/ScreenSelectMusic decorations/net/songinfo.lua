@@ -198,36 +198,12 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
 }
 
--- Gradient over banner when rate is not 1.0
-t[#t+1] = Def.Quad{
-	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2,120+capWideScale(get43size(60),60))
-		self:zoomto(capWideScale(get43size(384),384),40)
-		self:diffuse(getMainColor("frame"))
-		self:diffusealpha(0.6)
-		self:halign(1)
-		self:valign(1)
-		self:fadetop(1)
-	end,
-	SetCommand = function(self)
-		if getCurRateValue() == 1 then
-			self:stoptweening()
-			self:smooth(0.2)
-			self:diffusealpha(0)
-		else
-			self:stoptweening()
-			self:smooth(0.2)
-			self:diffusealpha(0.6)
-		end
-	end,
-	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
-}
 
 -- Rate text
 t[#t+1] = LoadFont("Common Bold") .. {
 	Name="songTitle",
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2-5,110+capWideScale(get43size(60),60))
+		self:xy(480,480)
 		self:halign(1)
 		self:zoom(0.45)
 		self:maxwidth(capWideScale(get43size(340),340)/0.45)
@@ -235,117 +211,12 @@ t[#t+1] = LoadFont("Common Bold") .. {
 	end,
 	SetCommand = function(self)
 		if getCurRateValue() == 1 then
-			self:settext("")
+			self:settext("1.0x Rate")
 		else
 			self:settext(getCurRateDisplayString())
 		end
 	end,
 	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
-}
-
-local function getReady()
-	local userCount = topScreen:GetUserQty()
-	local me = NSMAN:GetLoggedInUsername()
-	local ready = nil
-	for i = 1, userCount do
-		if topScreen:GetUser(i) == me then
-			ready = topScreen:GetUserReady(i)
-		end
-	end
-	return ready
-end
-
--- Ready button
-t[#t+1] = quadButton(6) .. {
-	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5, 217.5)
-		self:zoomto(55,25)
-		self:diffuse(getMainColor("negative"))
-		self:diffusealpha(0.9)
-		self:halign(0)
-	end,
-	MouseDownCommand = function(self, params)
-		if params.button ~= "DeviceButton_left mouse button" then
-			return
-		end
-		NSMAN:SendChatMsg("/ready", 1, NSMAN:GetCurrentRoomName())
-	end,
-	UsersUpdateMessageCommand = function(self)
-		local ready = getReady()
-		if ready then
-			self:finishtweening()
-			self:linear(0.1)
-			self:diffuse(getMainColor("positive"))
-			self:diffusealpha(0.9)
-		else
-			self:finishtweening()
-			self:linear(0.1)
-			self:diffuse(getMainColor("negative"))
-			self:diffusealpha(0.9)
-		end
-	end
-}
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 55/2, 217.5)
-		self:settext("Ready")
-		self:zoom(0.4)
-	end
-}
-
--- Player Options button
-t[#t+1] = quadButton(6) .. {
-	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 57, 217.5)
-		self:zoomto(55,25)
-		self:diffuse(getMainColor("frame"))
-		self:diffusealpha(0.8)
-		self:halign(0)
-	end,
-	MouseDownCommand = function(self, params)
-		if params.button ~= "DeviceButton_left mouse button" then
-			return
-		end
-		if song then
-			SCREENMAN:AddNewScreenToTop("ScreenPlayerOptions")
-		end
-	end
-}
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 55/2 + 57, 216)
-		self:settext("Player\nOptions")
-		self:zoom(0.4)
-	end
-
-}
-
--- Force Start button
-t[#t+1] = quadButton(6) .. {
-	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 57*2, 217.5)
-		self:zoomto(55,25)
-		self:diffuse(getMainColor("negative"))
-		self:diffusealpha(0.9)
-		self:halign(0)
-	end,
-	MouseDownCommand = function(self, params)
-		if params.button ~= "DeviceButton_left mouse button" then
-			return
-		end
-		NSMAN:SendChatMsg("/force", 1, NSMAN:GetCurrentRoomName())
-		self:finishtweening()
-		self:diffuse(getMainColor("highlight"))
-		self:linear(0.2)
-		self:diffuse(getMainColor("negative"))
-	end
-}
-t[#t+1] = LoadFont("Common Normal") .. {
-	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2-capWideScale(get43size(384),384)/2 - 5 + 55/2 + 57*2, 217.5)
-		self:settext("Force\nStart")
-		self:zoom(0.4)
-	end
 }
 
 

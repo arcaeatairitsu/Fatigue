@@ -14,7 +14,7 @@ local judges2 = {}
 for k,v in pairs(judges) do
 	judges2[v] = true
 end
-
+local wifey
 local bareBone = isBareBone()
 local cols = GAMESTATE:GetCurrentStyle():ColumnsPerPlayer() -- For relocating graph/judgecount frame
 local center1P = ((cols >= 6) or PREFSMAN:GetPreference("Center1Player")) -- For relocating graph/judgecount frame
@@ -27,7 +27,7 @@ local frameWidth = 80 -- Width of the Frame
 local frameHeight = ((#judges+1)*spacing)+8 -- Height of the Frame
 local judgeFontSize = 0.40 -- Font sizes for different text elements 
 local countFontSize = 0.35
-local gradeFontSize = 0.45
+local gradeFontSize = 0.75
 local highlightOpacity = 0.4
 local backgroundOpacity = bareBone and 1 or 0.6
 
@@ -90,19 +90,20 @@ t[#t+1] = Def.Quad{ -- Judgecount Background
 	end
 }
 
-t[#t+1] = LoadFont("Common Bold") .. { --grade
+t[#t+1] = LoadFont("Common Large") .. { --grade
 	Name=PLAYER_1.."Grade",
 	InitCommand = function(self)
-		self:xy(5,8+(#judges*spacing)):halign(0)
-		self:zoom(gradeFontSize)
+		self:xy(222,227-(#judges*spacing)-12):halign(0.5)
+		self:zoom(0.8):maxwidth(130)
 		self:playcommand("Set")
 	end,
 	SetCommand = function(self, params)
 		if not params then
-			self:settext(getGradeStrings("Grade_Tier07"))
+			self:settext("")
 			return
 		end
 		self:settext(getGradeStrings(getWifeGradeTier(params.WifePercent)))
+		self:diffuse(getGradeColor(score:GetWifeGrade()))
 
 		
 	end

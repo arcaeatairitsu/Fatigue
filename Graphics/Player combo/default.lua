@@ -96,7 +96,7 @@ local t = Def.ActorFrame {
 	end,
 	OnCommand = function(self)
 		if (allowedCustomization) then
-			c.Label:settext("COMBO")
+			c.Label:settext("Combo")
 			c.Number:visible(true)
 			c.Label:visible(wordsOn)
 			c.Number:settext(1000)
@@ -116,9 +116,9 @@ local t = Def.ActorFrame {
 
 		local labeltext = ""
 		if param.Combo then
-			labeltext = "COMBO"
+			labeltext = "Combo"
 		else
-			labeltext = "MISSES"
+			labeltext = "Combo Breaks"
 		end
 
 		c.Label:settext( labeltext )

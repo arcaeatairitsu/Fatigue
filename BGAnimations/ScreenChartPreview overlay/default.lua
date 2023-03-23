@@ -898,7 +898,7 @@ t[#t+1] = Def.ActorFrame {
 				end
 			end,
 			BeginCommand = function(self)
-				self:zoom(0.5):draworder(100)
+				self:zoom(0.725):draworder(100)
 				self:xy(frameWidth / 2, 50)
 				if usingreverse then
 					self:y(50 * 1.5 + 215)
@@ -918,6 +918,8 @@ t[#t+1] = Def.ActorFrame {
 		},
 	},
 }
+
+
 
 t[#t+1] = LoadActor("../_cursor")
 

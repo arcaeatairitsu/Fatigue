@@ -1,7 +1,7 @@
 local t = Def.ActorFrame{}
 local circleRadius = 100
-local maxValue = 30
-local softCap = 40/30
+local maxValue = 40
+local softCap = 60/40
 local frameWidth = capWideScale(250,300)
 local frameHeight = 270
 
@@ -37,7 +37,7 @@ t[#t+1] = LoadFont("Common Bold")..{
 		self:zoom(0.4)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		self:settext("MSD Breakdown")
+		self:settext("MSD Breakdown (Max 40)")
 	end
 }
 
@@ -128,7 +128,7 @@ end
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand  = function(self)
 		self:xy(frameWidth/2-5, frameHeight/2-10)
-		self:zoom(0.35)
+		self:zoom(0.6)
 		self:halign(1)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
 		self:settext("Overall:")

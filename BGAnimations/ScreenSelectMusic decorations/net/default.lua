@@ -23,7 +23,7 @@ t[#t+1] = Def.ActorFrame {
 		Name="StepsDisplayListRow",
 		CursorP1 = Def.ActorFrame {
 			InitCommand=function(self)
-				self:player(PLAYER_1):rotationz(90):diffusealpha(0.6)
+				self:player(PLAYER_1):rotationz(0	):diffusealpha(0.6)
 			end,
 			PlayerJoinedMessageCommand=function(self, params)
 				if params.Player == PLAYER_1 then

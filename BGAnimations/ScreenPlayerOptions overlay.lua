@@ -14,14 +14,18 @@ local t = Def.ActorFrame{
 }
 
 local profileP1
-
+local frameX = SCREEN_CENTER_X/2
+local frameY = SCREEN_CENTER_Y+100
+local frameWidth = capWideScale(get43size(390),390)
+local frameHeight = 110
+local frameHeightShort = 61
 local profileNameP1 = "No Profile"
 local playCountP1 = 0
 local playTimeP1 = 0
 local noteCountP1 = 0
 
-local AvatarXP1 = 100
-local AvatarYP1 = 50
+local AvatarXP1 = 0
+local AvatarYP1 = 20
 
 local bpms = {}
 if GAMESTATE:GetCurrentSong() then
@@ -116,7 +120,7 @@ t[#t+1] = Def.ActorFrame{
 			self:queuecommand("Set")
 		end,
 		SetCommand=function(self)
-			self:settext(profileNameP1.."'s Scroll Speed:")
+			self:settext("Scroll Speed")
 		end,
 		PlayerJoinedMessageCommand=function(self)
 			self:queuecommand("Set")
@@ -244,6 +248,5 @@ t[#t + 1] =
 if GetScreenAspectRatio() > 1.7 then
 	t[#t][#(t[#t]) + 1] = NSkinPreviewExtraTaps()
 end
-
 t[#t+1] = LoadActor("_frame")
 return t

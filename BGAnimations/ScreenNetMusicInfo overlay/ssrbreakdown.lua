@@ -1,7 +1,7 @@
 local t = Def.ActorFrame{}
 local circleRadius = 100
-local maxValue = 30
-local softCap = 40/30
+local maxValue = 40
+local softCap = 60/40
 local frameWidth = capWideScale(250,300)
 local frameHeight = 270
 

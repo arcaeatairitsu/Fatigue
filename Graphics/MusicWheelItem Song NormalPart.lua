@@ -13,25 +13,15 @@ local t =  Def.ActorFrame{
 t[#t+1] = Def.Quad{
 	InitCommand= function(self) 
 		self:x(0)
-		self:zoomto(capWideScale(get43size(340),340),44)
+		self:zoomto(337,35)
 		self:halign(0)
 		self:zwrite(true):clearzbuffer(true):blend('BlendMode_NoEffect')
 	end
 }
-
-t[#t+1] = quadButton(1) .. {
-	InitCommand= function(self) 
-		self:x(0)
-		self:zoomto(capWideScale(get43size(340),340),44)
-		self:halign(0)
-		self:visible(false)
-	end
-}
-
 t[#t+1] = Def.Quad{
 	InitCommand= function(self) 
 		self:x(0)
-		self:zoomto(capWideScale(get43size(340),340),44)
+		self:zoomto(337,35)
 		self:halign(0)
 	end,
 	SetCommand = function(self)
@@ -69,7 +59,7 @@ end
 
 t[#t+1] = LoadFont("Common Normal") .. {
 	InitCommand = function(self)
-		self:xy(340-5,-22+5)
+		self:xy(340-5,-22+8)
 		self:halign(1)
 		self:zoom(0.3)
 	end,
@@ -108,5 +98,7 @@ t[#t+1] = LoadActor("round_star") .. {
 		end
 	end
 }
+
+
 
 return t

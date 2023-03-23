@@ -402,7 +402,7 @@ local cp =
 		{
 			Name = "DisplayPercent",
 			InitCommand = function(self)
-				self:zoom(0.3):halign(1):valign(0)
+				self:zoom(0.3):halign(0.5):valign(0)
 			end,
 			OnCommand = function(self)
 				if allowedCustomization then
@@ -413,7 +413,7 @@ local cp =
 				self:settextf("%05.2f%%", 0)
 			end,
 			SpottedOffsetCommand = function(self)
-				self:settextf("%05.2f%%", math.max(0,wifey))
+				self:settextf("%05.2f%%", wifey)
 			end
 		},
 	MovableBorder(100, 13, 1, 0, 0)

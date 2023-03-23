@@ -1,5 +1,4 @@
 local t = Def.ActorFrame{}
-t[#t+1] = LoadActor("songinfo")
 
 t[#t+1] = Def.ActorFrame {
 	InitCommand=function(self)

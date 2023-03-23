@@ -35,7 +35,7 @@ t[#t+1] = Def.Quad{
 t[#t+1] = Def.Quad{
 	Name="ProgressFG",
 	InitCommand=function(self)
-		self:x(-width/2):zoomto(0,height):halign(0):diffuse(getMainColor('highlight')):diffusealpha(opacity)
+		self:x(-width/2):zoomto(0,height):halign(0):diffuse(color("#FF0000")):diffusealpha(opacity)
 	end
 }
 

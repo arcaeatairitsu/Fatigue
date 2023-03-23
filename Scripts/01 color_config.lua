@@ -348,13 +348,6 @@ function byGrade(grade)
 end
 
 -- Colorized stuff
-function byMSD(x)
-	if x then
-		return HSV(math.max(95 - (x / 40) * 150, -50), 0.9, 0.9)
-	end
-	return HSV(0, 0.9, 0.9)
-end
-
 function byMusicLength(x)
 	if x then
 		x = math.min(x, 600)
@@ -372,9 +365,15 @@ function byFileSize(x)
 end
 
 -- a tad-bit desaturated with a wider color range vs til death
+-- hardcoded 40+ MSD colors so that i know it's fucking impossible -gekizi
 function getMSDColor(MSD)
-	if MSD then
-		return HSV(math.min(220,math.max(280 - MSD*11, -40)), 0.5, 1)
+	if MSD >= 40 then
+		return color("#808080")
+	elseif MSD < 5 then
+		return color("#FFFFFF")
+	else
+		return HSV(math.min(220,math.max(280 - MSD*11, -30)), 0.5, 1)
 	end
 	return HSV(0, 0.9, 0.9)
 end
+

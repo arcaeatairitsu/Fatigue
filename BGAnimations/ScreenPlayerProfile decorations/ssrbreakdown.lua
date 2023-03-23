@@ -1,7 +1,7 @@
 local t = Def.ActorFrame{}
 local circleRadius = 100
-local maxValue = 30
-local softCap = 40/30
+local maxValue = 40
+local softCap = 60/40
 local pn = GAMESTATE:GetEnabledPlayers()[1]
 local profile = PROFILEMAN:GetProfile(pn)
 local frameWidth = 300
@@ -37,7 +37,7 @@ t[#t+1] = LoadFont("Common Bold")..{
 		self:zoom(0.4)
 		self:halign(0)
 		self:diffuse(color(colorConfig:get_data().selectMusic.TabContentText))
-		self:settext("Skill Rating Breakdown")
+		self:settext("Skill Rating Breakdown (Max 40)")
 	end
 }
 

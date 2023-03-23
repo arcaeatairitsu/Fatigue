@@ -20,7 +20,7 @@ t[#t+1] = quadButton(3) .. {
 
 t[#t+1] = Def.Quad {
 	InitCommand=function(self)
-		self:x(-10):zoomto(50,25):diffuse(color("#ffffff")):diffusealpha(0.5):rotationz(90)
+		self:x(-13):zoomto(50,25):diffuse(color("#ffffff")):diffusealpha(0.5):rotationz(90)
 	end
 }
 

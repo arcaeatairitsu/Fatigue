@@ -94,10 +94,10 @@ if fullPlayerInfo then
 		end
 	}
 
-	-- diff name
-	t[#t+1] = LoadFont("Common Normal") .. {
+	-- msd
+	t[#t+1] = LoadFont("Common large") .. {
 		InitCommand = function(self)
-			self:xy(56,21):zoom(0.4):halign(0):maxwidth(180/0.4)
+			self:xy(52,28):zoom(0.75):halign(0):maxwidth(100)
 		end,
 		BeginCommand = function(self) self:queuecommand('Set') end,
 		SetCommand=function(self)
@@ -108,11 +108,30 @@ if fullPlayerInfo then
 
 
 			local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
-			self:settextf("%s %s %5.2f",stype, diff, meter)
-			self:diffuse(getDifficultyColor(steps:GetDifficulty()))
+			self:settextf("%5.2f",meter)
+			self:diffuse(getMSDColor(meter))
 		end,
 		CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end
 	}
+		-- diff name
+		t[#t+1] = LoadFont("Common Bold") .. {
+			InitCommand = function(self)
+				self:xy(127,30):zoom(0.5):halign(0):maxwidth(180/0.5)
+			end,
+			BeginCommand = function(self) self:queuecommand('Set') end,
+			SetCommand=function(self)
+				local steps = GAMESTATE:GetCurrentSteps()
+				local diff = getDifficulty(steps:GetDifficulty())
+				local meter = steps:GetMSD(getCurRateValue(),1)
+				meter = meter == 0 and steps:GetMeter() or meter
+	
+	
+				local stype = ToEnumShortString(steps:GetStepsType()):gsub("%_"," ")
+				self:settextf("%s\n%s",diff, stype)
+				self:diffuse(getDifficultyColor(steps:GetDifficulty()))
+			end,
+			CurrentSongChangedMessageCommand = function(self) self:queuecommand('Set') end
+		}
 
 	
 	t[#t+1] = LoadFont("Common Bold") .. {
@@ -136,7 +155,7 @@ t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:zoomto(200,50)
 		self:halign(0)
-		self:xy(57, 35)
+		self:xy(-2, 60)
 		self:zoomto(120,10)
 	end
 }
@@ -145,9 +164,8 @@ t[#t+1] = Def.Quad{
 t[#t+1] = Def.Quad{
 	InitCommand = function(self)
 		self:halign(0)
-		self:xy(57, 35)
-		self:zoomto(0,10)
-		self:diffuse(getMainColor("highlight"))
+		self:xy(-2,60)
+		self:zoomto(0,10):diffuse(color("#FF0000"))
 		self:queuecommand("Set")
 	end,
 	JudgmentMessageCommand = function(self, params)
@@ -166,8 +184,8 @@ t[#t+1] = Def.Quad{
 -- life counter
 t[#t+1] = LoadFont("Common Bold") .. {
 	OnCommand = function(self)
-		self:xy(57+120+10, 35-1)
-		self:zoom(0.35)
+		self:xy(165,60)
+		self:zoom(0.35):halign(1)
 		self:queuecommand("Set")
 	end,
 	JudgmentMessageCommand = function(self, params)
@@ -178,7 +196,7 @@ t[#t+1] = LoadFont("Common Bold") .. {
 			return
 		end
 		local life = PLife(PLAYER_1)
-		self:settextf("%0.0f",life*100)
+		self:settextf("%0.2f Per.",life*10000/100)
 		if life*100 < 30 and life*100 ~= 0 then -- replace with lifemeter danger later
 			self:diffuseshift()
 			self:effectcolor1(1,1,1,1)

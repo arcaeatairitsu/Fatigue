@@ -198,50 +198,24 @@ t[#t+1] = LoadFont("Common Normal") .. {
 	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
 }
 
--- Gradient over banner when rate is not 1.0
-t[#t+1] = Def.Quad{
-	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2,120+capWideScale(get43size(60),60))
-		self:zoomto(capWideScale(get43size(384),384),40)
-		self:diffuse(getMainColor("frame"))
-		self:diffusealpha(0.6)
-		self:halign(1)
-		self:valign(1)
-		self:fadetop(1)
-	end,
-	SetCommand = function(self)
-		if getCurRateValue() == 1 then
-			self:stoptweening()
-			self:smooth(0.2)
-			self:diffusealpha(0)
-		else
-			self:stoptweening()
-			self:smooth(0.2)
-			self:diffusealpha(0.6)
-		end
-	end,
-	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
-}
 
 -- Rate text
 t[#t+1] = LoadFont("Common Bold") .. {
 	Name="songTitle",
 	InitCommand = function(self)
-		self:xy(SCREEN_CENTER_X/2+capWideScale(get43size(384),384)/2-5,110+capWideScale(get43size(60),60))
+		self:xy(405,300)
 		self:halign(1)
 		self:zoom(0.45)
-		self:maxwidth(capWideScale(get43size(340),340)/0.45)
 		self:diffuse(color(colorConfig:get_data().selectMusic.BannerText))
 	end,
 	SetCommand = function(self)
 		if getCurRateValue() == 1 then
-			self:settext("")
+			self:settext("1.0xMusic")
 		else
 			self:settext(getCurRateDisplayString())
 		end
 	end,
 	CurrentRateChangedMessageCommand = function(self) self:playcommand("Set") end
 }
-
 
 return t

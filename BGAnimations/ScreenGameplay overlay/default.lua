@@ -9,10 +9,8 @@ local profile = GetPlayerOrMachineProfile(pn)
 local steps = GAMESTATE:GetCurrentSteps()
 
 t[#t+1] = LoadActor("scoretracking")
-
+t[#t+1] = LoadActor("pacemaker")
 t[#t+1] = LoadActor("judgecount")
-
---t[#t+1] = LoadActor("pacemaker")
 t[#t+1] = LoadActor("npscalc")
 --t[#t+1] = LoadActor("lifepercent")
 t[#t+1] = LoadActor("lanecover")
