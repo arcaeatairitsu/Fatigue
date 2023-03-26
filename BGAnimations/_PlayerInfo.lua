@@ -42,8 +42,6 @@ local function highlightIfOver(self)
 end
 
 local translated_info = {
-	ProfileNew = THEME:GetString("ProfileChanges", "ProfileNew"),
-	NameChange = THEME:GetString("ProfileChanges", "ProfileNameChange"),
 	ClickLogin = THEME:GetString("GeneralInfo", "ClickToLogin"),
 	ClickLogout = THEME:GetString("GeneralInfo", "ClickToLogout"),
 	NotLoggedIn = THEME:GetString("GeneralInfo", "NotLoggedIn"),
