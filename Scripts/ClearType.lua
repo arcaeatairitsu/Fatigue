@@ -186,7 +186,16 @@ local function getClearLevel (pn,steps,score)
 		return 9 -- SDCB
 	end
 	
-	return 12 -- Clear
+	local lifeDiff = GetLifeDifficulty()
+	if lifeDiff == 4 then
+		return 12 -- Clear
+	elseif lifeDiff < 4 then
+		return 13 -- Easy Clear
+	elseif lifeDiff == 5 or lifeDiff == 6 then
+		return 11 -- Hard Clear
+	else
+		return 10 -- EXHC
+	end
 end
 
 
