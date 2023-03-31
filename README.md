@@ -20,7 +20,7 @@ Currently under construcion
 ![Select music](https://media.discordapp.net/attachments/1075751088692666398/1089250296993161308/2023-03-26_004105.jpg?width=768&height=431)
 * Moved best score display to the right, now also display tap judgements
 * MSD meter and steps type are now seperate from each other, with notes count below the MSD
-  * *For 40+ MSD charts, the MSD meter is colored grey*
+  * *For 40+ MSD charts, the MSD meter is colored grey* <br>
     *For <5 MSD charts, the MSD meter is colored white*
     *The color gradient is the same as the one used for MSD breakdown*
   * **Skillsets are now displayed next to the notes count**
