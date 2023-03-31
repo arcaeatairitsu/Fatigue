@@ -21,7 +21,7 @@ Currently under construcion
 * Moved best score display to the right, now also display tap judgements
 * MSD meter and steps type are now seperate from each other, with notes count below the MSD
   * *For 40+ MSD charts, the MSD meter is colored grey* <br>
-    *For <5 MSD charts, the MSD meter is colored white*
+    *For <5 MSD charts, the MSD meter is colored white* <br>
     *The color gradient is the same as the one used for MSD breakdown*
   * **Skillsets are now displayed next to the notes count**
 
