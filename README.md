@@ -3,7 +3,7 @@ A theme for Etterna.
 Gekizi's fork of spawncamping-wallhack
 
 This theme is pretty much just spawncamping-wallhack but with 'Til Death's evaluation screen (*sc-wh's eval crashes Etterna for some unknown reason*) <br>
-Currently under construcion
+Currently under construction
 
 ## Changes
 ### Init screen
