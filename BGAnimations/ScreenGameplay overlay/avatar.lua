@@ -10,6 +10,10 @@ local avatarPosition = {
 	Y = MovableValues.PlayerInfoP1Y
 }
 
+local translated_info = {
+	Judge = THEME:GetString("ScreenGameplay", "ScoringJudge"),
+	Scoring = THEME:GetString("ScreenGameplay", "ScoringType")
+}
 local function PLife(pn)
 	local life = STATSMAN:GetCurStageStats():GetPlayerStageStats():GetCurrentLife() or 0
 	if life < 0 then
@@ -116,7 +120,7 @@ if fullPlayerInfo then
 		-- diff name
 		t[#t+1] = LoadFont("Common Bold") .. {
 			InitCommand = function(self)
-				self:xy(127,30):zoom(0.5):halign(0):maxwidth(180/0.5)
+				self:xy(127,28):zoom(0.5):halign(0):maxwidth(180/0.5)
 			end,
 			BeginCommand = function(self) self:queuecommand('Set') end,
 			SetCommand=function(self)
@@ -140,7 +144,7 @@ if fullPlayerInfo then
 			self:zoom(0.35)
 			self:queuecommand("Set")
 			self:halign(0)
-			self:maxwidth(200 * 2)
+			self:maxwidth(1000)
 		end,
 		SetCommand = function(self)
 			local mods = GAMESTATE:GetPlayerState():GetPlayerOptionsString("ModsLevel_Current")
@@ -213,4 +217,20 @@ t[#t+1] = LoadFont("Common Bold") .. {
 }
 
 
+t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(1,-20):halign(0):zoom(0.45)
+		end,
+		BeginCommand = function(self)
+			self:settextf("%s: %d", translated_info["Judge"], GetTimingDifficulty())
+		end
+	}
+t[#t+1] = LoadFont("Common Normal") .. {
+		InitCommand = function(self)
+			self:xy(0,-10):halign(0):zoom(0.45)
+		end,
+		BeginCommand = function(self)
+			self:settextf("%s: %s", translated_info["Scoring"], scoringToText(4))
+		end
+	}
 return t

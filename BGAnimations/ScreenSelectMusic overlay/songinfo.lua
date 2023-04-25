@@ -94,7 +94,7 @@ t[#t+1] = Def.Sprite {
 t[#t+1] = Def.Sprite {
 	Name = "CDTitle",
 	InitCommand = function(self)
-		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2)+40)
+		self:x(SCREEN_CENTER_X/2+(capWideScale(get43size(384),384)/2+10)+40)
 		self:y(120-(capWideScale(get43size(120),120)/2)+30)
 		self:diffusealpha(0.8)
 	end,
@@ -130,12 +130,31 @@ t[#t+1] = Def.Sprite {
 		else
 			self:zoom(1)
 		end
-	end,
+	if isOver(self) then
+		self:playcommand("ToolTip")
+	end
+end,
+ToolTipCommand = function(self)
+	if isOver(self) then
+		if self.song and song:HasCDTitle() and self:GetVisible() then
+			local auth = self.song:GetOrTryAtLeastToGetSimfileAuthor()
+			if auth and #auth > 0 and auth ~= "Author Unknown" then
+				TOOLTIP:SetText(auth)
+				TOOLTIP:Show()
+			else
+				TOOLTIP:Hide()
+			end
+		else
+			TOOLTIP:Hide()
+		end
+	end
+end,
 	CurrentSongChangedMessageCommand = function(self)
 		self:finishtweening()
 		self:smooth(0.5)
 		self:diffusealpha(0)
 	end
+	
 }
 
 -- Label for how many stages we have played

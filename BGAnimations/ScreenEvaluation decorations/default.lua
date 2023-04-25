@@ -15,6 +15,18 @@ end
 	The primary rescore function is hiding in the function responsible for displaying the graphs, which may or may not be called by random code everywhere.
 ]]
 
+	local hsTable = getScoreTable(pn, rate)
+	local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
+	local profile = PROFILEMAN:GetProfile(pn)
+	local index
+	if hsTable == nil then
+		index = 1
+	else
+		index = getHighScoreIndex(hsTable, pss:GetHighScore())
+	end
+	local recScore = getBestScore(pn, index, rate, true)
+	local curScore = pss:GetHighScore()
+	local clearType = getClearType(pn,steps,curScore)
 local translated_info = {
 	CCOn = THEME:GetString("ScreenEvaluation", "ChordCohesionOn"),
 	MAPARatio = THEME:GetString("ScreenEvaluation", "MAPARatio")
@@ -48,7 +60,7 @@ local pss = STATSMAN:GetCurStageStats():GetPlayerStageStats()
 local frameX = 20
 local frameY = 140
 local frameWidth = SCREEN_CENTER_X - 120
-local clearType = getClearType(pn,steps,curScore)
+
 
 -- dont default to using custom windows and dont persist that state
 -- custom windows are meant to be used as a thing you occasionally check, not the primary way to play the game
@@ -344,7 +356,7 @@ local function scoreBoard(pn, position)
 				InitCommand = function(self)
 					self:zoomto(capWideScale(get43size(235),235), 25)
 					self:halign(0):valign(1)
-					self:diffuse(color("#111111	"))
+					self:diffuse(color("#111111"))
 				end,
 				MouseClickCommand = function(self, params)
 					if self:IsVisible() and usingCustomWindows then
@@ -1257,7 +1269,7 @@ local function scoreBoard(pn, position)
 					self:diffusealpha(0.7)
 					self:GetChild("Line"):diffusealpha(0)
 					self:zoom(0.8)
-					self:xy(590,176)
+					self:xy(590,0)
 				end,
 				ScoreChangedMessageCommand = function(self)
 					if score and judge then
@@ -1287,7 +1299,7 @@ local function scoreBoard(pn, position)
 					local ss = SCREENMAN:GetTopScreen():GetStageStats()
 					self:Set(ss, ss:GetPlayerStageStats())
 					self:zoom(0.8)
-					self:xy(590,168)
+					self:xy(590,-12)
 				end,
 				SetComboGraphMessageCommand = function(self)
 					self:Clear()
@@ -1299,62 +1311,81 @@ local function scoreBoard(pn, position)
 	end
 
 			--ClearType
-		--	t[#t+1] = LoadFont("Common Normal")..{
-		--		InitCommand = function(self)
-		--			self:xy(150,150)
-		--			self:zoom(0.35)
-		--			self:halign(0):valign(1)
-		--			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
-		--			self:playcommand("Set")
-		--		end,
-		--		SetCommand = function(self)
-		--			if PREFSMAN:GetPreference("SortBySSRNormPercent") then
-		--				self:settextf("%s (J4)", THEME:GetString("ScreenEvaluation", "CategoryClearType"))
-		--			else
-		--				self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
-		--			end
-		--		end,
-		--		SetJudgeCommand = function(self)
-		--			local jdg = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
-		--			self:settextf("%s (J%d)", THEME:GetString("ScreenEvaluation", "CategoryClearType"), jdg)
-		--		end,
-		--		ResetJudgeCommand = function(self)
-		--			self:playcommand("Set")
-		--		end
-		--	}
+			t[#t+1] = LoadFont("Common Normal")..{
+				InitCommand = function(self)
+					self:xy(150,150)
+					self:zoom(0.35)
+					self:halign(0):valign(1)
+					self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
+					self:playcommand("Set")
+				end,
+				SetCommand = function(self)
+					if PREFSMAN:GetPreference("SortBySSRNormPercent") then
+						self:settextf("%s (J4)", THEME:GetString("ScreenEvaluation", "CategoryClearType"))
+					else
+						self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
+					end
+				end,
+				SetJudgeCommand = function(self)
+					local jdg = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
+					self:settextf("%s (J%d)", THEME:GetString("ScreenEvaluation", "CategoryClearType"), jdg)
+				end,
+				ResetJudgeCommand = function(self)
+					self:playcommand("Set")
+				end
+			}
 	
-		--	t[#t+1] = LoadFont("Common Normal")..{
-		--		InitCommand = function(self)
-		--			self:xy(157,107)
-		--			self:zoom(0.5)
-		--			self:halign(1):valign(1)
-		--		end,
-		--		SetCommand = function(self)
-		--			self:settext(getClearTypeText(clearType))
-		--			self:diffuse(getClearTypeColor(clearType))
-		--		end
-		--	}
-	--
-	--
-	--		t[#t+1] = LoadFont("Common Normal")..{
-	--			InitCommand = function(self)
-	--				self:xy(157,107)
-	--				self:zoom(0.35)
-	--				self:halign(1):valign(0)
-	--			end,
-	--			SetCommand = function(self)
-	--				local clearType = getHighestClearType(pn,steps,hsTable,index)
-	--				self:settext(getClearTypeText(clearType))
-	--				self:diffuse(getClearTypeColor(clearType))
-	--				self:diffusealpha(0.5)
-	--			end
-	--		}
+			t[#t+1] = LoadFont("Common Normal")..{
+			InitCommand = function(self)
+					self:xy(157,107)
+					self:zoom(0.5)
+					self:halign(1):valign(1)
+				end,
+				SetCommand = function(self)
+					self:settext(getClearTypeFromScore(clearType))
+					self:diffuse(getClearTypeFromScore(clearType))
+				end
+			}
+	
+			t[#t+1] = LoadFont("Common Normal")..{
+				InitCommand = function(self)
+					self:xy(157,107)
+					self:zoom(0.35)
+					self:halign(1):valign(0)
+				end,
+				SetCommand = function(self)
+					local clearType = getHighestClearType(pn,steps,hsTable,index)
+					self:settext(getClearTypeText(clearType))
+					self:diffuse(getClearTypeColor(clearType))
+					self:diffusealpha(0.5)
+				end
+			}
+
+Def.ActorFrame{
+	LoadFont("Common Normal")..{
+		InitCommand = function(self)
+			self:xy(200,200)
+			self:zoom(0.5)
+			self:halign(1):valign(1)
+			self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardText))
+		end,
+		SetCommand = function(self)
+			local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+			local curScoreValue = getScore(curScore, steps, false)
+			local curScorePercent = getScore(curScore, steps, true)
+			local maxScoreValue = notes * 2
+			local percentText = string.format("%05.2f%%",math.floor(curScorePercent*10000)/100)
+			self:settextf("%s (%d/%d)",percentText,curScoreValue,maxScoreValue)
+		end
+	}
+}
 	
 	t[#t + 1] = StandardDecorationFromTable("GraphDisplay" .. ToEnumShortString(PLAYER_1), GraphDisplay())
 	t[#t + 1] = StandardDecorationFromTable("ComboGraph" .. ToEnumShortString(PLAYER_1), ComboGraph())
 
 	return t
 end
+
 
 if GAMESTATE:IsPlayerEnabled() then
 	t[#t + 1] = scoreBoard(PLAYER_1, 0)

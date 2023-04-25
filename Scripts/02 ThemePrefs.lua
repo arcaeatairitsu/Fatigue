@@ -99,14 +99,35 @@ end
 			end
 			
 			local tChoices = {}
-			for i = 1, 99 do
+			for i = 0, 96 do
 				tChoices[i] = tostring(i) .. "%"
 			end
-			for i = 1, 3 do
-				tChoices[99 + i] = tostring(99 + i * 0.25) .. "%"
-			end
-			for i = 1, 4 do
-				tChoices[#tChoices + 1] = tostring(99.96 + i * 0.01) .. "%"
+			local tChoices2 = {
+				"96.50%", -- AA.
+				"97.00%",
+				"97.50%",
+				"98.00%",
+				"98.50%",
+				"99.00%", -- AA:
+				"99.50%",
+				"99.60%",
+				"99.70%", -- AAA
+				"99.75%", -- Prenerf AAA
+				"99.80%", -- AAA.
+				"99.85%", -- Prenerf AAA.
+				"99.90%", -- AAA:
+				"99.92%", -- prenerf AAA:
+				"99.955%", -- AAAA
+				"99.97%", -- AAAA.
+				"99.98%", -- AAAA:
+				"99.99%", -- prenerf AAAA:
+				"99.9935%", -- AAAAA
+				"99.995%", -- might need this
+				"99.999%", -- prenerf AAAAA
+				"100%" -- X rank confirmed????
+			}
+			for _,v in ipairs(tChoices2) do
+				tChoices[#tChoices+1] = v
 			end
 			function TargetGoal()
 				local t = {
@@ -1120,37 +1141,7 @@ function BannerWheel()
 	return t
 end
 
-function BareBone()
-	local t = {
-		Name = "BareBone",
-		LayoutType = "ShowAllInRow",
-		SelectType = "SelectOne",
-		OneChoiceForAllPlayers = true,
-		ExportOnChange = true,
-		Choices = { "Off","On"},
-		LoadSelections = function(self, list, pn)
-			local pref = themeConfig:get_data().global.BareBone
-			if pref then
-				list[2] = true
-			else 
-				list[1] = true
-			end
-		end,
-		SaveSelections = function(self, list, pn)
-			local value
-			if list[1] then
-				value = false
-			else
-				value = true
-			end
-			themeConfig:get_data().global.BareBone = value
-			themeConfig:set_dirty()
-			themeConfig:save()
-		end
-	}
-	setmetatable( t, t )
-	return t
-end
+
 function JudgmentEnabled()
 	local t = {
 		Name = "JudgmentEnabled",

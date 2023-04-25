@@ -1,7 +1,7 @@
 -- theme identification file
 
 themeInfo = {
-	Name = "Etterna: Fatigue (v0.72.1)",
+	Name = "Etterna: Fatigue",
 	Version = "0.99",
 	Date = "20230305",
 }

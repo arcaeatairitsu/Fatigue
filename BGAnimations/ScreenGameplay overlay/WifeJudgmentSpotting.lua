@@ -214,9 +214,9 @@ local t =
 		end
 
 		if lifebar ~= nil then
-			lifebar:zoomtowidth(MovableValues.PlayerInfoP1Width)
-			lifebar:zoomtoheight(MovableValues.PlayerInfoP1Height)
-			lifebar:xy(MovableValues.PlayerInfoP1X, MovableValues.PlayerInfoP1Y)
+			lifebar:zoomtowidth(0)
+			lifebar:zoomtoheight(0)
+			lifebar:xy(0,0)
 		end
 
 		for i, actor in ipairs(noteColumns) do
@@ -427,6 +427,7 @@ end
  					    									**Current Mean**
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	Displays the current mean for all tap deviations so far.
+	GRRRRRRRR POCO WHY AINT THIS WORKING
 ]]
 
 local mT =
@@ -469,14 +470,6 @@ local mT =
 			},
 		MovableBorder(100, 13, 1, 0, 0)
 	}
-
-
-if enabledDisplayMean then
-	t[#t + 1] = mT
-end
-
-
-
 
 --[[~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 														    	**Player ErrorBar**

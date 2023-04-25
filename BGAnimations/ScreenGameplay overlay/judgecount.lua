@@ -103,7 +103,6 @@ t[#t+1] = LoadFont("Common Large") .. { --grade
 			return
 		end
 		self:settext(getGradeStrings(getWifeGradeTier(params.WifePercent)))
-		self:diffuse(getGradeColor(score:GetWifeGrade()))
 
 		
 	end

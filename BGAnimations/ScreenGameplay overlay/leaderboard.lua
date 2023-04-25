@@ -116,14 +116,14 @@ curScore = {
 	GetJudgmentString = function()
 		local str = ""
 		for i, v in ipairs(jdgs) do
-			str = str .. curScore.jdgVals[v] .. " | "
+			str = str .. curScore.jdgVals[v] .. " / "
 		end
 		return str .. "x" .. curScore.combo
 	end
 }
 curScore.combo = 0
 curScore.curWifeScore = 0
-curScore.curGrade = "Grade_Tier02"
+curScore.curGrade = "Grade_Tier01"
 curScore.jdgVals = {
 	["TapNoteScore_W1"] = 0,
 	["TapNoteScore_W2"] = 0,
@@ -236,9 +236,9 @@ function scoreEntry(i)
 		function(self, hs)
 			local ssr = hs:GetSkillsetSSR("Overall")
 			if ssr < 0 then
-				self:settext("")
+				self:settext("-?-"):diffuse(color("#FF0000"))
 			else
-				self:settextf("%.2f", ssr):diffuse(byMSD(ssr))
+				self:settextf("%.2f", ssr):diffuse(getMSDColor(ssr))
 			end
 		end,
 		WIDTH / 5
@@ -257,19 +257,9 @@ function scoreEntry(i)
 	addLabel(
 		"wife",
 		function(self, hs)
-			self:settextf("%05.2f%%", hs:GetWifeScore() * 100):diffuse(byGrade(hs:GetWifeGrade()))
+			self:settextf("%05.3f%% (%s)", hs:GetWifeScore() * 1000/10,getGradeStrings(hs:GetWifeGrade())):diffuse(byGrade(hs:GetWifeGrade())):halign(1):xy(187,10):maxwidth(180)
 		end,
 		1.8 * WIDTH
-	)
-	addLabel(
-		"grade",
-		function(self, hs)
-			self:settext(getGradeStrings(hs:GetWifeGrade()))
-			self:diffuse(byGrade(hs:GetWifeGrade()))
-			self:halign(0.5)
-		end,
-		2 * WIDTH,
-		ENTRY_HEIGHT / 2
 	)
 	addLabel(
 		"judges",

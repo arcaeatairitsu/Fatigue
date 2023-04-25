@@ -30,7 +30,7 @@ t[#t+1] = Def.Quad{
 
 t[#t+1] = LoadFont("Common Normal")..{
 	InitCommand = function(self)
-		self:settext("Stage Failed")
+		self:settext("Stage Failed\nPress \"`\" to retry.")
 		self:Center()
 		self:zoom(0.5)
 		self:diffusealpha(0)

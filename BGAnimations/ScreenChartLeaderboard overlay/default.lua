@@ -863,10 +863,10 @@ local function scoreList()
 				local w4 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W4")
 				local w5 = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_W5")
 				local miss = scoreList[scoreIndex]:GetTapNoteScore("TapNoteScore_Miss")
-				if score >= 99.5 then
+				if score >= 99 then
 					self:settextf("%0.4f%% - %d / %d / %d / %d / %d / %d",score, w1, w2, w3, w4, w5, miss)
 				else
-					self:settextf("%0.2f%% - %d / %d / %d / %d / %d / %d",score, w1, w2, w3, w4, w5, miss)
+					self:settextf("%0.3f%% - %d / %d / %d / %d / %d / %d",score, w1, w2, w3, w4, w5, miss)
 				end
 				self:x(self:GetParent():GetChild("Grade"):GetX()+(self:GetParent():GetChild("Grade"):GetWidth()*0.4)+5)
 			end
