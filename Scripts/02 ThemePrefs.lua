@@ -99,7 +99,7 @@ end
 			end
 			
 			local tChoices = {}
-			for i = 0, 96 do
+			for i = 1, 96 do
 				tChoices[i] = tostring(i) .. "%"
 			end
 			local tChoices2 = {

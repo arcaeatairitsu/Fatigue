@@ -200,7 +200,7 @@ t[#t+1] = LoadFont("Common Bold") .. {
 			return
 		end
 		local life = PLife(PLAYER_1)
-		self:settextf("%0.2f Per.",life*10000/100)
+		self:settextf("%0.1f Per.",life*10000/100)
 		if life*100 < 30 and life*100 ~= 0 then -- replace with lifemeter danger later
 			self:diffuseshift()
 			self:effectcolor1(1,1,1,1)

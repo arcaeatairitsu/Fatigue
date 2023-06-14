@@ -240,7 +240,7 @@ local t =
 	end,
 	JudgmentMessageCommand = function(self, msg)
 		tDiff = msg.WifeDifferential
-		wifey = Floor(msg.WifePercent * 100) / 100
+		wifey = Floor(msg.WifePercent * 10000) / 10000
 		jdgct = msg.Val
 		if msg.Offset ~= nil then
 			dvCur = msg.Offset
@@ -394,7 +394,7 @@ local cp =
 	end,
 	Def.Quad {
 		InitCommand = function(self)
-			self:zoomto(60, 13):diffuse(color("0,0,0,0.4")):halign(1):valign(0)
+			self:zoomto(60, 13):diffuse(color("0,0,0,0.4")):halign(0.5):valign(0)
 		end
 	},
 	-- Displays your current percentage score
@@ -406,14 +406,14 @@ local cp =
 			end,
 			OnCommand = function(self)
 				if allowedCustomization then
-					self:settextf("%05.2f%%", 100)
+					self:settextf("%05.4f%%", 100)
 					setBorderAlignment(self:GetParent():GetChild("Border"), 1, 0)
 					setBorderToText(self:GetParent():GetChild("Border"), self)
 				end
-				self:settextf("%05.2f%%", 0)
+				self:settextf("%05.4f%%", 0)
 			end,
 			SpottedOffsetCommand = function(self)
-				self:settextf("%05.2f%%", wifey)
+				self:settextf("%05.4f%%", wifey)
 			end
 		},
 	MovableBorder(100, 13, 1, 0, 0)

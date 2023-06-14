@@ -1,5 +1,10 @@
 local t = Def.ActorFrame {}
 local inMulti = Var("LoadingScreen") == "ScreenNetEvaluation"
+local steps = GAMESTATE:GetCurrentSteps()
+local notes = steps:GetRadarValues(pn):GetValue("RadarCategory_Notes")
+local pn = GAMESTATE:GetEnabledPlayers()[1]
+
+local clearType = getClearType(pn,steps,curScore)
 
 if GAMESTATE:GetNumPlayersEnabled() == 1 then
 	if inMulti then
@@ -138,6 +143,21 @@ t[#t+1] = Def.ActorFrame {
 	},
 }
 
+
+
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function(self)
+		self:xy(100,107)
+		self:zoom(0.5)
+		self:halign(1):valign(1)
+	end,
+	SetCommand = function(self)
+		self:settext(getClearTypeText(clearType))
+		self:diffuse(getClearTypeColor(clearType))
+	end
+}
+
+
 -- a helper to get the radar value for a score and fall back to playerstagestats if that fails
 local function gatherRadarValue(radar, score)
     local n = score:GetRadarValues():GetValue(radar)
@@ -275,27 +295,7 @@ local function scoreBoard(pn, position)
 				self:xy(frameX - 5, frameY + 5)
 				self:zoomto(frameWidth + 10, 217)
 				self:halign(0):valign(0)
-				self:diffuse(color("#111111"))
-			end,
-		},
-		Def.Quad {
-			Name = "DisplayHorizontalLine1",
-			InitCommand = function(self)
-				self:xy(frameX, frameY + 30)
-				self:zoomto(frameWidth, 2)
-				self:halign(0)
-				self:diffuse(getMainColor("highlight"))
-				self:diffusealpha(0.5)
-			end,
-		},
-		Def.Quad {
-			Name = "DisplayHorizontalLine2",
-			InitCommand = function(self)
-				self:xy(frameX, frameY + 55)
-				self:zoomto(frameWidth, 2)
-				self:halign(0)
-				self:diffuse(getMainColor("highlight"))
-				self:diffusealpha(0.5)
+				self:diffuse(color("#111111aa"))
 			end,
 		},
 		Def.ActorFrame {
@@ -309,8 +309,6 @@ local function scoreBoard(pn, position)
 				usingCustomWindows = not usingCustomWindows
 
 				self:visible(usingCustomWindows)
-				self:GetParent():GetChild("GraphDisplayP1"):visible(not usingCustomWindows)
-				self:GetParent():GetChild("ComboGraphP1"):visible(not usingCustomWindows)
 				if not usingCustomWindows then
 					unloadCustomWindowConfig()
 					MESSAGEMAN:Broadcast("UnloadedCustomWindow")
@@ -356,7 +354,7 @@ local function scoreBoard(pn, position)
 				InitCommand = function(self)
 					self:zoomto(capWideScale(get43size(235),235), 25)
 					self:halign(0):valign(1)
-					self:diffuse(color("#111111"))
+					self:diffuse(color("#111111aa"))
 				end,
 				MouseClickCommand = function(self, params)
 					if self:IsVisible() and usingCustomWindows then
@@ -371,16 +369,6 @@ local function scoreBoard(pn, position)
 						self:GetParent():playcommand("Set")
 						MESSAGEMAN:Broadcast("LoadedCustomWindow")
 					end
-				end,
-			},
-			Def.Quad {
-				Name = "SmallHorizontalLine",
-				InitCommand = function(self)
-					self:xy(0, 0)
-					self:zoomto(capWideScale(get43size(235),235), 2)
-					self:halign(0)
-					self:diffuse(getMainColor("highlight"))
-					self:diffusealpha(0.5)
 				end,
 			},
 			LoadFont("Common Large") .. {
@@ -412,7 +400,7 @@ local function scoreBoard(pn, position)
 		LoadFont("Common Large") .. {
 			Name = "MSDDisplay",
 			InitCommand = function(self)
-				self:xy(frameX, frameY +32)
+				self:xy(frameX +2, frameY +32)
 				self:zoom(0.5)
 				self:halign(0):valign(0)
 				self:maxwidth(500)
@@ -445,7 +433,7 @@ local function scoreBoard(pn, position)
 		LoadFont("Common Large") .. {
 			Name = "SSRDisplay",
 			InitCommand = function(self)
-				self:xy(frameWidth + frameX - 3, frameY + 32)
+				self:xy(frameWidth + frameX -155, frameY + 32)
 				self:zoom(0.5)
 				self:halign(1):valign(0)
 				self:maxwidth(200)
@@ -465,7 +453,7 @@ local function scoreBoard(pn, position)
 		LoadFont("Common Large") .. {
 			Name = "DifficultyName",
 			InitCommand = function(self)
-				self:xy(frameWidth + frameX +277, frameY-20)
+				self:xy(frameWidth + frameX - 3, frameY + 32)
 				self:zoom(0.5)
 				self:halign(1):valign(0)
 				self:maxwidth(200)
@@ -476,7 +464,7 @@ local function scoreBoard(pn, position)
 			SetCommand = function(self)
 				local steps = GAMESTATE:GetCurrentSteps()
 				local diff = getDifficulty(steps:GetDifficulty())
-				self:settext(getShortDifficulty(diff))
+				self:settextf(getShortDifficulty(diff))
 				self:diffuse(getDifficultyColor(GetCustomDifficulty(steps:GetStepsType(), steps:GetDifficulty())))
 			end,
 		},
@@ -585,6 +573,159 @@ local function scoreBoard(pn, position)
 					self:diffuse(getGradeColor(score:GetWifeGrade()))
 				end,
 			},
+			LoadFont("Common Large") .. {
+				Name = "Scorelabel",
+				InitCommand = function(self)
+					self:xy(frameWidth + frameX -136, frameY *2 +49)
+					self:zoom(0.25)
+					self:halign(0)
+					self:settextf("Score")
+				end,
+			},
+			LoadFont("Common Large") .. {
+				Name = "Permil",
+				InitCommand = function(self)
+					self:xy(frameWidth + frameX +1, frameY *2 +63)
+					self:zoom(0.2)
+					self:halign(1)
+					self:settextf("/ 100000000")
+				end,
+			},
+			LoadFont("Common Large") .. {
+				Name = "Scorequestionmark",
+				InitCommand = function(self)
+					self:xy(frameWidth + frameX +3, frameY *2 +42)
+					self:zoom(0.35)
+					self:halign(1):valign(0)
+				end,
+				BeginCommand = function(self)
+					self:queuecommand("Set")
+				end,
+				ScoreChangedMessageCommand = function(self)
+					self:queuecommand("Set")
+				end,
+				SetCommand = function(self)
+					local scorew1 = 100000000 / notes
+					local scorew2 = 80000000 / notes
+					local scorew3 = 60000000 / notes
+					local scorew4 = 40000000 / notes
+					local scorew5 = 20000000 / notes
+					local scorelongform = scorew1*score:GetTapNoteScore("TapNoteScore_W1")+scorew2*score:GetTapNoteScore("TapNoteScore_W2")+scorew3*score:GetTapNoteScore("TapNoteScore_W3")+scorew4*score:GetTapNoteScore("TapNoteScore_W4")+scorew5*score:GetTapNoteScore("TapNoteScore_W5")
+					self:settextf("%6.0f",scorelongform)
+					if scorelongform == 100000000 then
+					self:diffuseshift()
+					self:effectcolor1(0.5,1,1,1)
+					self:effectcolor2(1,1,1,1)
+					self:effectperiod(2.5)
+					elseif scorelongform >= 95000000 then
+						self:diffuseshift()
+						self:effectcolor1(1,1,0.45,1)
+						self:effectcolor2(1,1,1,1)
+						self:effectperiod(2.5)
+					elseif scorelongform >= 90000000 then
+						self:diffuseshift()
+						self:effectcolor1(0.5,1,0.55,1)
+						self:effectcolor2(1,1,1,1)
+						self:effectperiod(2.5)
+					elseif scorelongform <= 60000000 then
+						self:diffuseshift()
+						self:effectcolor1(1,0,0,1)
+						self:effectcolor2(1,1,1,1)
+						self:effectperiod(2.5)
+					else
+						self:diffuse(color("#FFFFFF"))
+				end
+			end
+			},
+			LoadFont("Common Large") .. {
+				Name = "WifeDPScorelabel",
+				InitCommand = function(self)
+					self:xy(frameWidth + frameX -137, frameY *2 +14)
+					self:zoom(0.25)
+					self:halign(0)
+					self:settextf("Wife3 DP")
+				end,
+			},
+			LoadFont("Common Large") .. {
+				Name = "maxwifedp",
+				InitCommand = function(self)
+					local maxScorewife = notes *2
+					self:xy(frameWidth + frameX +2, frameY *2 +27)
+					self:zoom(0.2)
+					self:halign(1)
+					self:settextf("/%s",maxScorewife)
+				end,
+			},
+			LoadFont("Common Large") .. {
+				Name = "WifeDPScorequestionmark",
+				InitCommand = function(self)
+					self:xy(frameWidth + frameX +3, frameY *2.05)
+					self:zoom(0.35):maxwidth(160)
+					self:halign(1):valign(0)
+				end,
+				BeginCommand = function(self)
+					self:queuecommand("Set")
+				end,
+				ScoreChangedMessageCommand = function(self)
+					self:queuecommand("Set")
+				end,
+				SetCommand = function(self)
+					local pscore = hsTable[index]:GetWifeScore()
+					self:settextf("%.2f",pscore *2 * notes)
+					self:diffuse(color("#FFFFFF")) 
+				end  
+					},
+			LoadFont("Common Large") .. {
+				Name = "DPScorelabel",
+				InitCommand = function(self)
+					self:xy(frameWidth + frameX -137, frameY *2 -16)
+					self:zoom(0.25)
+					self:halign(0)
+					self:settextf("DP Score")
+				end,
+			},
+			LoadFont("Common Large") .. {
+				Name = "max",
+				InitCommand = function(self)
+					local maxScore = notes *2
+					self:xy(frameWidth + frameX +2, frameY *2 -2)
+					self:zoom(0.2)
+					self:halign(1)
+					self:settextf("/%s",maxScore)
+				end,
+			},
+			LoadFont("Common Large") .. {
+				Name = "DPScorequestionmark",
+				InitCommand = function(self)
+					self:xy(frameWidth + frameX +3, frameY *1.85 -2)
+					self:zoom(0.35)
+					self:halign(1):valign(0)
+				end,
+				BeginCommand = function(self)
+					self:queuecommand("Set")
+				end,
+				ScoreChangedMessageCommand = function(self)
+					self:queuecommand("Set")
+				end,
+				SetCommand = function(self)
+					local dpw1 = 2
+					local dpw2 = 2
+					local dpw3 = 1
+					local dpw4 = 0
+					local dpw5 = -4
+					local dpmiss = -8
+					local dpscore = dpw1*score:GetTapNoteScore("TapNoteScore_W1")+dpw2*score:GetTapNoteScore("TapNoteScore_W2")+dpw3*score:GetTapNoteScore("TapNoteScore_W3")+dpw4*score:GetTapNoteScore("TapNoteScore_W4")+dpw5*score:GetTapNoteScore("TapNoteScore_W5")+dpmiss*score:GetTapNoteScore("TapNoteScore_Miss")
+					self:settextf("%s",dpscore)
+						if dpscore == notes *2 then
+							self:diffuseshift()
+							self:effectcolor1(1,1,0.45,1)
+							self:effectcolor2(1,1,1,1)
+							self:effectperiod(2.5)
+						else
+						self:diffuse(color("#FFFFFF"))
+				end
+			end
+			},
 
 			LoadFont("Common Large") ..	{-- high precision rollover
 				Name = "LongerText",
@@ -647,7 +788,7 @@ local function scoreBoard(pn, position)
 		LoadFont("Common Normal") .. {
 			Name = "ModString",
 			InitCommand = function(self)
-				self:xy(frameX + 2.4, frameY + 63)
+				self:xy(frameX + 2.4, frameY + 214)
 				self:zoom(0.40)
 				self:halign(0)
 				self:maxwidth(frameWidth / 0.41)
@@ -671,12 +812,17 @@ local function scoreBoard(pn, position)
 		LoadFont("Common Large") .. {
 			Name = "ChordCohesionIndicator",
 			InitCommand = function(self)
-				self:xy(frameX + 3, frameY + 210)
+				self:xy(frameWidth +440, frameY -16)
 				self:zoom(0.25)
-				self:halign(0)
+				self:halign(0.5)
 				self:maxwidth(capWideScale(get43size(100), 160)/0.25)
 				self:settext(translated_info["CCOn"])
 				self:visible(false)
+				self:diffuseshift()
+			self:effectcolor1(1,0,0,1)
+			self:effectcolor2(0,0,0,0)
+			self:effectperiod(1.5)
+
 			end,
 			BeginCommand = function(self)
 				self:queuecommand("Set")
@@ -694,81 +840,52 @@ local function scoreBoard(pn, position)
 		},
 	}
 
+	-- Timing/Judge Difficulty
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function(self)
+		self:xy(25,200)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color("#FFFFFF")):diffusealpha(0.8)
+		self:queuecommand("Set")
+	end,
+	SetCommand = function(self)
+		self:settextf("Timing Difficulty: %d",judge)
+	end,
+	SetJudgeCommand = function(self)
+		self:queuecommand("Set")
+	end,
+	ResetJudgeCommand = function(self)
+		self:queuecommand("Set")
+	end
+}
+
+-- Life Difficulty
+t[#t+1] = LoadFont("Common Normal")..{
+	InitCommand = function(self)
+		self:xy(38,211)
+		self:zoom(0.4)
+		self:halign(0)
+		self:diffuse(color("#FFFFFF")):diffusealpha(0.8)
+		self:settextf("Life Difficulty: %d",GetLifeDifficulty())
+	end
+}
 	local function judgmentBar(judgmentIndex, judgmentName)
 		local t = Def.ActorFrame {
-			Name = "JudgmentBar"..judgmentName,
-			Def.Quad {
-				Name = "BG",
-				InitCommand = function(self)
-					self:xy(frameX, frameY + 80 + ((judgmentIndex - 1) * 22))
-					self:zoomto(frameWidth, 18)
-					self:halign(0)
-					self:diffuse(byJudgment(judgmentName))
-					self:diffusealpha(0.5)
-				end,
-			},
-			Def.Quad {
-				Name = "Fill",
-				InitCommand = function(self)
-					self:xy(frameX, frameY + 80 + ((judgmentIndex - 1) * 22))
-					self:zoomto(0, 18)
-					self:halign(0)
-					self:diffuse(byJudgment(judgmentName))
-					self:diffusealpha(0.5)
-				end,
-				BeginCommand = function(self)
-					self:glowshift()
-					self:effectcolor1(color("1,1,1," .. tostring(score:GetTapNoteScore(judgmentName) / totalTaps * 0.4)))
-					self:effectcolor2(color("1,1,1,0"))
 
-					if aboutToForceWindowSettings then return end
-
-					self:sleep(0.2)
-					self:smooth(1.5)
-					self:zoomx(frameWidth * score:GetTapNoteScore(judgmentName) / totalTaps)
-				end,
-				ForceWindowMessageCommand = function(self, params)
-					local rescoreJudges = getRescoredJudge(dvt, judge, judgmentIndex)
-					self:finishtweening()
-					self:smooth(0.2)
-					self:zoomx(frameWidth * rescoreJudges / totalTaps)
-				end,
-				LoadedCustomWindowMessageCommand = function(self)
-					local newjudgecount = lastSnapshot:GetJudgments()[judgmentName:gsub("TapNoteScore_", "")]
-					self:finishtweening()
-					self:smooth(0.2)
-					self:zoomx(frameWidth * newjudgecount / totalTaps)
-				end,
-				ScoreChangedMessageCommand = function(self)
-					self:zoomx(frameWidth * score:GetTapNoteScore(judgmentName) / totalTaps)
-				end,
-				
-				CodeMessageCommand = function(self, params)
-					if usingCustomWindows then
-						return
-					end
-
-					if params.Name == "PrevJudge" or params.Name == "NextJudge" then
-						local rescoreJudges = getRescoredJudge(dvt, judge, judgmentIndex)
-						self:finishtweening()
-						self:bounceend(0.2)
-						self:zoomx(frameWidth * rescoreJudges / totalTaps)
-					end
-					if params.Name == "ResetJudge" then
-						self:finishtweening()
-						self:bounceend(0.2)
-						self:zoomx(frameWidth * score:GetTapNoteScore(judgmentName) / totalTaps)
-					end
-				end
-			},
 			LoadFont("Common Large") .. {
 				Name = "Name",
 				InitCommand = function(self)
 					self:xy(frameX + 10, frameY + 79.3 + ((judgmentIndex - 1) * 22))
 					self:zoom(0.25)
 					self:halign(0)
+					self:diffuse(byJudgment(judgmentName))
 				end,
 				BeginCommand = function(self)
+					self:glowshift()
+					self:effectcolor1(color("1,1,1," .. tostring(score:GetTapNoteScore(judgmentName) / totalTaps * 0.4)))
+					self:effectcolor2(color("1,1,1,0"))
+
 					if aboutToForceWindowSettings then return end
 					self:queuecommand("Set")
 				end,
@@ -798,9 +915,11 @@ local function scoreBoard(pn, position)
 			LoadFont("Common Large") .. {
 				Name = "Count",
 				InitCommand = function(self)
-					self:xy(frameX + frameWidth - 40, frameY + 79.3 + ((judgmentIndex - 1) * 22))
+					self:xy(frameX + frameWidth -175, frameY + 79.3 + ((judgmentIndex - 1) * 22))
 					self:zoom(0.25)
 					self:halign(1)
+					self:diffuse(byJudgment(judgmentName))
+					
 				end,
 				BeginCommand = function(self)
 					if aboutToForceWindowSettings then return end
@@ -839,9 +958,10 @@ local function scoreBoard(pn, position)
 			LoadFont("Common Normal") .. {
 				Name = "Percentage",
 				InitCommand = function(self)
-					self:xy(frameX + frameWidth - 38, frameY + 79.7 + ((judgmentIndex - 1) * 22))
+					self:xy(frameX + frameWidth -172, frameY + 80 + ((judgmentIndex - 1) * 22))
 					self:zoom(0.3)
 					self:halign(0)
+					self:diffuse(byJudgment(judgmentName)):diffusealpha(0.7)
 				end,
 				BeginCommand = function(self)
 					if aboutToForceWindowSettings then return end
@@ -859,11 +979,11 @@ local function scoreBoard(pn, position)
 				end,
 				ForceWindowMessageCommand = function(self, params)
 					local rescoredJudge = getRescoredJudge(dvt, params.judge, judgmentIndex)
-					self:settextf("(%03.2f%%)", rescoredJudge / totalTaps * 100)
+					self:settextf("(%03.2f%%)", rescoredJudge / notes * 100)
 				end,
 				LoadedCustomWindowMessageCommand = function(self)
 					local newjudgecount = lastSnapshot:GetJudgments()[judgmentName:gsub("TapNoteScore_", "")]
-					self:settextf("(%03.2f%%)", newjudgecount / totalTaps * 100)
+					self:settextf("(%03.2f%%)", newjudgecount / notes * 100)
 				end,
 				CodeMessageCommand = function(self, params)
 					if usingCustomWindows then
@@ -879,7 +999,7 @@ local function scoreBoard(pn, position)
 						self:playcommand("Set")
 					end
 				end
-			}
+			},
 		}
 		return t
 	end
@@ -901,10 +1021,18 @@ local function scoreBoard(pn, position)
 		Name = "MAPARatioContainer",
 
 		LoadFont("Common Large") .. {
-			Name = "Text",
+			Name = "MAText",
 			InitCommand = function(self)
-				ratioText = self
-				self:settextf("%s:", translated_info["MAPARatio"])
+				maratioText = self
+				self:settextf("Marv Atk.")
+				self:zoom(0.25):halign(1)
+			end
+		},
+		LoadFont("Common Large") .. {
+			Name = "PAText",
+			InitCommand = function(self)
+				paratioText = self
+				self:settextf("Perf Atk.")
 				self:zoom(0.25):halign(1)
 			end
 		},
@@ -912,6 +1040,7 @@ local function scoreBoard(pn, position)
 			Name = "MAText",
 			InitCommand = function(self)
 				maRatio = self
+				self:xy(frameWidth + frameX, frameY + 100)
 				self:zoom(0.25):halign(1):diffuse(byJudgment(judges[1]))
 			end
 		},
@@ -934,19 +1063,12 @@ local function scoreBoard(pn, position)
 				-- Fill in maRatio and paRatio
 				maRatio:settextf("%.2f:1", marvelousTaps / perfectTaps)
 				paRatio:settextf("%.2f:1", perfectTaps / greatTaps)
+				maRatio:xy(frameWidth +20, frameY +79)
+				paRatio:xy(frameWidth + 20, frameY +102)
+				paratioText:xy(frameWidth - 65, frameY +102)
+				maratioText:xy(frameWidth - 61, frameY +79)
 
-				-- Align ratioText and maRatio to paRatio (self)
-				maRatioX = paRatio:GetX() - paRatio:GetZoomedWidth() - 10
-				maRatio:xy(maRatioX, paRatio:GetY())
-
-				ratioTextX = maRatioX - maRatio:GetZoomedWidth() - 10
-				ratioText:xy(ratioTextX, paRatio:GetY())
-				if score:GetChordCohesion() == true then
-					maRatio:maxwidth(maRatio:GetZoomedWidth()/0.25)
-					self:maxwidth(self:GetZoomedWidth()/0.25)
-					ratioText:maxwidth(capWideScale(get43size(65), 85)/0.27)
-				end
-			end,
+				end,
 			CodeMessageCommand = function(self, params)
 				if usingCustomWindows then
 					return
@@ -1026,7 +1148,7 @@ local function scoreBoard(pn, position)
 			InitCommand = function(self)
 				self:xy(frameX - 5, frameY + 226):zoomto(frameWidth / 2 + 164, 56.5)
 				self:halign(0):valign(0)
-				self:diffuse(color("#111111"))
+				self:diffuse(color("#111111aa"))
 			end,
 		},
 	}
@@ -1242,7 +1364,7 @@ local function scoreBoard(pn, position)
 			Def.Quad {
 				Name = "BG",
 				InitCommand = function(self)
-					self:diffuse(color("#111111"))
+					self:diffuse(color("#111111aa"))
 					self:xy(frameWidth + 25, frameY + 226)
 					self:zoomto(frameWidth / 2 + 10, 56.5)
 					self:halign(1):valign(0)
@@ -1310,56 +1432,6 @@ local function scoreBoard(pn, position)
 		}
 	end
 
-			--ClearType
-			t[#t+1] = LoadFont("Common Normal")..{
-				InitCommand = function(self)
-					self:xy(150,150)
-					self:zoom(0.35)
-					self:halign(0):valign(1)
-					self:diffuse(color(colorConfig:get_data().evaluation.ScoreCardCategoryText))
-					self:playcommand("Set")
-				end,
-				SetCommand = function(self)
-					if PREFSMAN:GetPreference("SortBySSRNormPercent") then
-						self:settextf("%s (J4)", THEME:GetString("ScreenEvaluation", "CategoryClearType"))
-					else
-						self:settext(THEME:GetString("ScreenEvaluation","CategoryClearType"))
-					end
-				end,
-				SetJudgeCommand = function(self)
-					local jdg = (PREFSMAN:GetPreference("SortBySSRNormPercent") and 4 or GetTimingDifficulty())
-					self:settextf("%s (J%d)", THEME:GetString("ScreenEvaluation", "CategoryClearType"), jdg)
-				end,
-				ResetJudgeCommand = function(self)
-					self:playcommand("Set")
-				end
-			}
-	
-			t[#t+1] = LoadFont("Common Normal")..{
-			InitCommand = function(self)
-					self:xy(157,107)
-					self:zoom(0.5)
-					self:halign(1):valign(1)
-				end,
-				SetCommand = function(self)
-					self:settext(getClearTypeFromScore(clearType))
-					self:diffuse(getClearTypeFromScore(clearType))
-				end
-			}
-	
-			t[#t+1] = LoadFont("Common Normal")..{
-				InitCommand = function(self)
-					self:xy(157,107)
-					self:zoom(0.35)
-					self:halign(1):valign(0)
-				end,
-				SetCommand = function(self)
-					local clearType = getHighestClearType(pn,steps,hsTable,index)
-					self:settext(getClearTypeText(clearType))
-					self:diffuse(getClearTypeColor(clearType))
-					self:diffusealpha(0.5)
-				end
-			}
 
 Def.ActorFrame{
 	LoadFont("Common Normal")..{
